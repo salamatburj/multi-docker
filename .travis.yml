@@ -23,4 +23,3 @@ after_success:
 - docker push salamatburj/multi-server
 - docker push salamatburj/multi-worker
 
-code 
