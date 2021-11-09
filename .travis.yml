@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t salamatburj/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run salamatburj/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t salamatburj/multi-client ./client
+  - docker build -t salamatburj/multi-nginx ./nginx
+  - docker build -t salamatburj/multi-server ./server
+  - docker build -t salamatburj/multi-worker ./worker
+# Log in to docker CLI
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# take those images push them to dockerhub
+- docker push salamatburj/multi-client
+- docker push salamatburj/multi-nginx
+- docker push salamatburj/multi-server
+- docker push salamatburj/multi-worker
+
